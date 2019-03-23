@@ -93,7 +93,7 @@ class Stratec():
 	
 	def levelOne(self):
 		if self.path != 3:
-			self.loadCSV('The_Basics.csv')	
+			self.loadCSV('input/The_Basics.csv')	
 		self.path = None		
 
 		shape = self.matrix.shape
@@ -111,7 +111,7 @@ class Stratec():
 		#self.checkMarkNoise((9,18))	
 
 		# write the solution into file			
-		text_file = open("lvl1.txt", "w")
+		text_file = open("sol/lvl1.txt", "w")
 		text_file.write(str(numTotalS-numNoise))
 		text_file.close()
 		self.solLvl1 = numTotalS-numNoise
@@ -177,7 +177,7 @@ class Stratec():
 	
 	def levelTwo(self):
 		if self.path != 3:
-			self.loadCSV('The_Basics.csv')
+			self.loadCSV('input/The_Basics.csv')
 
 		self.solLvl1 = self.levelOne()
 		self.path = None
@@ -199,7 +199,7 @@ class Stratec():
 						sol.append(s)	
 		
 		# write the solution into file		
-		text_file = open("lvl2.txt", "w")
+		text_file = open("sol/lvl2.txt", "w")
 		text_file.write(str(self.solLvl1)+"\n")
 
 		for i in range(len(sol)):
@@ -279,14 +279,14 @@ class Stratec():
 
 	def levelThree(self):
 
-		self.loadCSV('Duplicates.csv')
+		self.loadCSV('input/Duplicates.csv')
 		self.path = 3
 		self.solLvl2 = self.levelTwo()
 	
 		sol = self.solLvl2	
 		
 		# write the solution into file		
-		text_file = open("lvl3.txt", "w")
+		text_file = open("sol/lvl3.txt", "w")
 		text_file.write(str(self.solLvl1)+"\n")
 		
 		colorList = []		

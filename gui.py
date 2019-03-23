@@ -123,7 +123,7 @@ class Window(Frame):
             cv2.line(im, (xL,yR), (xR,yR), (255,0,0),2)
             cv2.line(im, (xR,yL), (xR,yR), (255,0,0),2)
         
-        w = tki.Label(self.master, text = "                Solution is in \"lvl2.txt\"                ")
+        w = tki.Label(self.master, text = "                Solution is in \"sol/lvl2.txt\"                ")
         w.pack()
         w.place(x = 360, y = 495)
 	
@@ -163,7 +163,7 @@ class Window(Frame):
        
         im[0:10,0:10][0],im[0:10,0:10][1],im[0:10,0:10][2] = 0,0,0 
 
-        w = tki.Label(self.master, text = "                Solution is in \"lvl3.txt\"                ")
+        w = tki.Label(self.master, text = "                Solution is in \"sol/lvl3.txt\"                ")
         w.pack()
         w.place(x = 360, y = 495)
 	
