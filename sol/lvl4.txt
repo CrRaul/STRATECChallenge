@@ -1,0 +1,9 @@
+12
+
+(3,45) W:11 H:2
+(7,6) W:2 H:4- this object is also found at (7,12), rotated by 90 degrees
+(8,29) W:3 H:8- this object is also found at (32,1), rotated by 180 degrees
+(8,78) W:14 H:6
+(20,47) W:8 H:8
+(21,80) W:5 H:5- this object is also found at (28,14), rotated by 0 degrees, and at (28,72), rotated by 0 degrees
+(33,48) W:6 H:5- this object is also found at (34,28), rotated by 0 degrees

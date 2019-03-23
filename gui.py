@@ -155,8 +155,13 @@ class Window(Frame):
                 elif matrix[i][j] == -1:
                     im[i*10:i*10+10, j*10:j*10+10, 2] = 255      
                 else:
-                    im[i*10:i*10+10, j*10:j*10+10, 0] = matrix[i][j]
-                    im[i*10:i*10+10, j*10:j*10+10, 2] = matrix[i][j] / ( i + j+1) 
+                    Red = matrix[i][j] % 5
+                    Grn = (matrix[i][j] / 4) % 5
+                    Blu = (matrix[i][j] / 16) % 5
+
+                    im[i*10:i*10+10, j*10:j*10+10, 0] = 255 * Blu
+                    im[i*10:i*10+10, j*10:j*10+10, 1] = 255 * Grn
+                    im[i*10:i*10+10, j*10:j*10+10, 2] = 255 * Red
 
                 cv2.line(im, (j*10, 0), (j*10, self.iH), (50,50,50), 1)
             cv2.line(im, (0, i*10), (self.iW, i*10), (50,50,50), 1)
@@ -173,6 +178,53 @@ class Window(Frame):
 
     #############################################################    
 
+	
+    #############################################################		LVL 4
+
+    def drawLevelFour(self):
+        im = np.zeros((self.iH, self.iW, 3), np.uint8)
+	
+	# solve lvl 3
+        self.stratec.levelFour()
+	
+	# get the modified matrix
+        matrix = self.stratec.getMatrix()
+	
+	# draw the matrix
+        for i in range(len(matrix)):
+            for j in range(len(matrix[0])):
+
+                if matrix[i][j] == 3:
+                    im[i*10:i*10+10, j*10:j*10+10, 1] = 255           
+		
+                elif matrix[i][j] == -1:
+                    im[i*10:i*10+10, j*10:j*10+10, 2] = 255      
+                elif matrix[i][j] != 0:
+                    Red = matrix[i][j] % 5
+                    Grn = (matrix[i][j] / 4) % 5
+                    Blu = (matrix[i][j] / 16) % 5
+
+                    im[i*10:i*10+10, j*10:j*10+10, 0] = 255 * Blu
+                    im[i*10:i*10+10, j*10:j*10+10, 1] = 255 * Grn
+                    im[i*10:i*10+10, j*10:j*10+10, 2] = 255 * Red
+ 
+
+
+                cv2.line(im, (j*10, 0), (j*10, self.iH), (50,50,50), 1)
+            cv2.line(im, (0, i*10), (self.iW, i*10), (50,50,50), 1)
+       
+        im[0:10,0:10][0],im[0:10,0:10][1],im[0:10,0:10][2] = 0,0,0 
+
+        w = tki.Label(self.master, text = "                Solution is in \"sol/lvl4.txt\"                ")
+        w.pack()
+        w.place(x = 360, y = 495)
+	
+	
+        self.image = im
+        self.updatePanel()
+
+    #############################################################  
+	
     # update the panel with self.image
     # transform cv2 image to tkinter image and show
     def updatePanel(self):
@@ -205,7 +257,7 @@ class Window(Frame):
         filemenu.add_command(label="lvl1", command=self.drawLevelOne)
         filemenu.add_command(label="lvl2", command=self.drawLevelTwo)
         filemenu.add_command(label="lvl3", command=self.drawLevelThree)
-        filemenu.add_command(label="lvl4", command=self.nothing)
+        filemenu.add_command(label="lvl4", command=self.drawLevelFour)
         filemenu.add_separator()
         filemenu.add_command(label="Exit", command= self.master.quit)
         menubar.add_cascade(label="opt", menu=filemenu)

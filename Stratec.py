@@ -15,6 +15,46 @@ class Stratec():
 	def getMatrix(self):
 		return self.matrix
 
+	
+	def fill(self, start, colorList, color = None):
+		q = Queue()
+		q.put(start)
+
+		if color == None:
+			color = random.randint(190,255)
+			while color in colorList:
+				color = random.randint(190,255)
+
+		self.matrix[start[0],start[1]] = color
+
+		while not q.empty():
+			index = q.get()	
+			
+			l = (index[0], index[1]-1)
+			r = (index[0], index[1]+1)
+			u = (index[0]-1, index[1])
+			d = (index[0]+1, index[1])
+
+
+			if l[1] >= 0 and self.matrix[l[0]][l[1]] == 3:
+				q.put(l)
+				self.matrix[l[0],l[1]] = color				
+						
+
+			if r[1] < len(self.matrix[0]) and self.matrix[r[0]][r[1]] == 3:
+				q.put(r)
+				self.matrix[r[0],r[1]] = color
+
+
+			if u[0] >= 0 and self.matrix[u[0]][u[1]] == 3:
+				q.put(u)
+				self.matrix[u[0],u[1]] = color
+
+
+			if d[0] < len(self.matrix) and self.matrix[d[0]][d[1]] == 3:
+				q.put(d)
+				self.matrix[d[0],d[1]] = color
+		return color	
 
        ##################################################################	Level 1
        #         							#   
@@ -94,7 +134,6 @@ class Stratec():
 	def levelOne(self):
 		if self.path != 3:
 			self.loadCSV('input/The_Basics.csv')	
-		self.path = None		
 
 		shape = self.matrix.shape
 		wM = shape[1]
@@ -110,11 +149,12 @@ class Stratec():
 					numTotalS +=1
 		#self.checkMarkNoise((9,18))	
 
-		# write the solution into file			
-		text_file = open("sol/lvl1.txt", "w")
-		text_file.write(str(numTotalS-numNoise))
-		text_file.close()
-		self.solLvl1 = numTotalS-numNoise
+		if self.path!=3:
+			# write the solution into file			
+			text_file = open("sol/lvl1.txt", "w")
+			text_file.write(str(numTotalS-numNoise))
+			text_file.close()
+			self.solLvl1 = numTotalS-numNoise
 
 		return numTotalS-numNoise
        #								 #
@@ -180,8 +220,7 @@ class Stratec():
 			self.loadCSV('input/The_Basics.csv')
 
 		self.solLvl1 = self.levelOne()
-		self.path = None
-
+	
 		shape = self.matrix.shape
 		wM = shape[1]
 		hM = shape[0]		
@@ -197,21 +236,22 @@ class Stratec():
 						continue
 					else:
 						sol.append(s)	
-		
-		# write the solution into file		
-		text_file = open("sol/lvl2.txt", "w")
-		text_file.write(str(self.solLvl1)+"\n")
+		if self.path!=3:
+			# write the solution into file		
+			text_file = open("sol/lvl2.txt", "w")
+			text_file.write(str(self.solLvl1)+"\n")
 
-		for i in range(len(sol)):
-			xL = sol[i][0]
-			yL = sol[i][1]        
-			xR = sol[i][2]
-			yR = sol[i][3]
+			for i in range(len(sol)):
+				xL = sol[i][0]
+				yL = sol[i][1]        
+				xR = sol[i][2]
+				yR = sol[i][3]
 			
-			text_file.write("("+str(yL)+","+str(xL)+") W:"+str(xR-xL+1)+" H:"+str(yR-yL+1)+"\n")
+				text_file.write("("+str(yL)+","+str(xL)+") W:"+str(xR-xL+1)+" H:"+str(yR-yL+1)+"\n")
+	
+			text_file.close()
 
-
-		text_file.close()
+		self.path = None
 		return sol
        #								 #
        ###################################################################
@@ -223,58 +263,10 @@ class Stratec():
 		A = self.matrix[posM1[1]:posM1[3]+1,posM1[0]:posM1[2]+1]
 		B = self.matrix[posM2[1]:posM2[3]+1,posM2[0]:posM2[2]+1]
 		
-		shapeA = A.shape
-		shapeB = B.shape
+		if np.array_equal(A, B):
+			return True
 
-		if shapeA[0] != shapeB[0] or shapeA[1] != shapeB[1]:
-			return False
-	
-		for i in range(0,shapeA[0]):
-			for j in range(0,shapeA[1]):
-				if A[i][j] != B[i][j]:
-					return False
-
-		return True
-
-	def fill(self, start, colorList, color = None):
-		q = Queue()
-		q.put(start)
-
-		if color == None:
-			color = random.randint(100,255)
-			while color in colorList:
-				color = random.randint(0,255)
-
-		self.matrix[start[0],start[1]] = color
-
-		while not q.empty():
-			index = q.get()	
-			
-			l = (index[0], index[1]-1)
-			r = (index[0], index[1]+1)
-			u = (index[0]-1, index[1])
-			d = (index[0]+1, index[1])
-
-
-			if l[1] >= 0 and self.matrix[l[0]][l[1]] == 3:
-				q.put(l)
-				self.matrix[l[0],l[1]] = color				
-						
-
-			if r[1] < len(self.matrix[0]) and self.matrix[r[0]][r[1]] == 3:
-				q.put(r)
-				self.matrix[r[0],r[1]] = color
-
-
-			if u[0] >= 0 and self.matrix[u[0]][u[1]] == 3:
-				q.put(u)
-				self.matrix[u[0],u[1]] = color
-
-
-			if d[0] < len(self.matrix) and self.matrix[d[0]][d[1]] == 3:
-				q.put(d)
-				self.matrix[d[0],d[1]] = color
-		return color
+		return False
 		
 
 	def levelThree(self):
@@ -291,38 +283,120 @@ class Stratec():
 		
 		colorList = []		
 		
+		for i in range(len(sol)):
+			if sol[i][0]!=-1:			
+				dupList = []
+				for j in range(i+1,len(sol)):
+					ok =  self.checkEquMatrix(sol[i],sol[j])
+					if ok == True:
+						dupList.append(j)
 
-		for i in range(len(sol)-1):
-			dupList = []
-			for j in range(i+1,len(sol)):
-				if self.checkEquMatrix(sol[i],sol[j]):
-					dupList.append(j)
+				xL = sol[i][0]
+				yL = sol[i][1]        
+				xR = sol[i][2]
+				yR = sol[i][3]
+
 			
-			xL = sol[i][0]
-			yL = sol[i][1]        
-			xR = sol[i][2]
-			yR = sol[i][3]
+				if len(dupList) == 0:	
+					text_file.write("("+str(yL)+","+str(xL)+") W:"+str(xR-xL+1)+" H:"+str(yR-yL+1)+"\n")
+				else:
+					color = self.fill((sol[i][1],sol[i][0]),colorList)
+					colorList.append(color)
 
-			if len(dupList) == 0:	
-				text_file.write("("+str(yL)+","+str(xL)+") W:"+str(xR-xL+1)+" H:"+str(yR-yL+1)+"\n")
-			else:
-				color = self.fill((sol[i][1],sol[i][0]),colorList)
-				colorList.append(color)
-				
-				text_file.write("("+str(yL)+","+str(xL)+") W:"+str(xR-xL+1)+" H:"+str(yR-yL+1))
-				for k in range(len(dupList)):
-					xL2 = sol[dupList[k]][0]
-					yL2 = sol[dupList[k]][1]
 
-					color = self.fill((sol[dupList[k]][1],sol[dupList[k]][0]),colorList, color)				
+					text_file.write("("+str(yL)+","+str(xL)+") W:"+str(xR-xL+1)+" H:"+str(yR-yL+1))
+								
+					for k in range(len(dupList)):			
+						xL2 = sol[dupList[k]][0]
+						yL2 = sol[dupList[k]][1]
+	
+						color = self.fill((sol[dupList[k]][1],sol[dupList[k]][0]),colorList, color)				
+						if k == 0:
+							text_file.write("- this object is also found at "+"("+str(yL2)+","+str(xL2)+")")
+						else:
+							text_file.write(", and at "+"("+str(yL2)+","+str(xL2)+")")
+						sol[dupList[k]][0] = -1
+						sol[dupList[k]][1] = -1
+						sol[dupList[k]][2] = -1
+						sol[dupList[k]][3] = -1
+					text_file.write("\n")
 
-					text_file.write(" this object is also found at ""("+str(yL2)+","+str(xL2)+")"+ "\n")
-					
-					sol[dupList[k]][0] = 0
-					sol[dupList[k]][1] = 0
-					sol[dupList[k]][2] = 0
-					sol[dupList[k]][3] = 0
 		text_file.close()
        #								 #
        ###################################################################
+	
 
+	##################################################################	Level 4
+       #         							#   
+	def checkEquMatrix4(self, posM1, posM2):
+		A = self.matrix[posM1[1]:posM1[3]+1,posM1[0]:posM1[2]+1]
+		B = self.matrix[posM2[1]:posM2[3]+1,posM2[0]:posM2[2]+1]
+
+		angle = 0
+
+		for k in range(4):
+
+			if np.array_equal(A, B):
+				return [True, angle]
+			
+			angle += 90
+			B = np.rot90(B,-1)
+
+
+		return [False,None]
+		
+		
+
+	def levelFour(self):
+
+		self.loadCSV('input/Duplicates_Advanced.csv')
+		self.path = 3
+		self.solLvl2 = self.levelTwo()
+	
+		sol = self.solLvl2	
+		
+		# write the solution into file		
+		text_file = open("sol/lvl4.txt", "w")
+		text_file.write(str(self.solLvl1)+"\n")
+		
+		colorList = []		
+		
+		for i in range(len(sol)):
+			if sol[i][0] != -1:
+				dupList = []
+				angleDup = []
+				for j in range(i+1,len(sol)):
+					solEqu = self.checkEquMatrix4(sol[i],sol[j])
+					if solEqu[0]:
+						dupList.append(j)
+						angleDup.append(solEqu[1])
+					
+				xL = sol[i][0]
+				yL = sol[i][1]        
+				xR = sol[i][2]
+				yR = sol[i][3]
+
+				if len(dupList) == 0:	
+					text_file.write("\n")
+					text_file.write("("+str(yL)+","+str(xL)+") W:"+str(xR-xL+1)+" H:"+str(yR-yL+1).rstrip('\n'))
+				else:
+					
+					color = self.fill((sol[i][1],sol[i][0]),colorList)
+					colorList.append(color)
+					text_file.write("\n")
+					text_file.write("("+str(yL)+","+str(xL)+") W:"+str(xR-xL+1)+" H:"+str(yR-yL+1).rstrip('\n'))
+					for k in range(len(dupList)):
+						if sol[dupList[k]][0] != -1:				
+							xL2 = sol[dupList[k]][0]
+							yL2 = sol[dupList[k]][1]
+		
+							color = self.fill((sol[dupList[k]][1],sol[dupList[k]][0]),colorList, color)				
+							if k == 0:
+								text_file.write("- this object is also found at "+"("+str(yL2)+","+str(xL2)+")"+ ", rotated by "+str(angleDup[k])+ " degrees".rstrip('\n'))
+							else:
+								text_file.write(", and at "+"("+str(yL2)+","+str(xL2)+")"+ ", rotated by "+str(angleDup[k])+ " degrees".rstrip('\n'))
+							sol[dupList[k]][0] = -1
+				
+		text_file.close()
+       #								 #
+       ###################################################################
